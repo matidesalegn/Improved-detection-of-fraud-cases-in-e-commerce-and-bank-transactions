@@ -1,6 +1,10 @@
 import unittest
 import pandas as pd
-from src.data.data_preprocessing import DataPreprocessing
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join('..', 'src')))
+
+from data.data_preprocessing import DataPreprocessing
 
 class TestDataPreprocessing(unittest.TestCase):
 

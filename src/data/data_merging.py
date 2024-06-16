@@ -1,3 +1,5 @@
+# src/data/data_merging.py
+
 import pandas as pd
 import ipaddress
 
@@ -6,7 +8,20 @@ class DataMerging:
         self.fraud_data = fraud_data
         self.ip_data = ip_data
 
+    def is_valid_ip(self, ip):
+        try:
+            ipaddress.ip_address(ip)
+            return True
+        except ValueError:
+            return False
+
     def convert_ip_to_int(self):
+        # Filter out invalid IP addresses
+        self.fraud_data = self.fraud_data[self.fraud_data['ip_address'].apply(self.is_valid_ip)]
+        self.ip_data = self.ip_data[self.ip_data['lower_bound_ip_address'].apply(self.is_valid_ip)]
+        self.ip_data = self.ip_data[self.ip_data['upper_bound_ip_address'].apply(self.is_valid_ip)]
+
+        # Convert valid IP addresses to integers
         self.fraud_data['ip_address_int'] = self.fraud_data['ip_address'].apply(lambda x: int(ipaddress.ip_address(x)))
         self.ip_data['lower_bound_ip_address_int'] = self.ip_data['lower_bound_ip_address'].apply(lambda x: int(ipaddress.ip_address(x)))
         self.ip_data['upper_bound_ip_address_int'] = self.ip_data['upper_bound_ip_address'].apply(lambda x: int(ipaddress.ip_address(x)))
