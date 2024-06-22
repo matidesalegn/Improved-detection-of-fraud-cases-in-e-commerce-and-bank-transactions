@@ -8,3 +8,4 @@ matplotlib
 seaborn
 ipaddress
 intervaltree
+category_encoders

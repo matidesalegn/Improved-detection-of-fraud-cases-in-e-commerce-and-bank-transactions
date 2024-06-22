@@ -1,5 +1,6 @@
 import pandas as pd
-from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.preprocessing import StandardScaler
+import category_encoders as ce
 
 class DataPreprocessing:
     def __init__(self, data):
@@ -28,9 +29,15 @@ class DataPreprocessing:
         self.data[columns] = scaler.fit_transform(self.data[columns])
         return self.data
 
-    def encode_categorical(self, columns):
-        encoder = OneHotEncoder(sparse_output=False, drop='first')
-        encoded_features = encoder.fit_transform(self.data[columns])
-        encoded_df = pd.DataFrame(encoded_features, columns=encoder.get_feature_names_out(columns))
-        self.data = pd.concat([self.data.drop(columns, axis=1), encoded_df], axis=1)
+    def encode_categorical(self, columns, encoding_type='onehot'):
+        if encoding_type == 'onehot':
+            encoder = ce.OneHotEncoder(cols=columns, use_cat_names=True)
+        elif encoding_type == 'target':
+            encoder = ce.TargetEncoder(cols=columns)
+        elif encoding_type == 'hashing':
+            encoder = ce.HashingEncoder(cols=columns)
+        else:
+            raise ValueError("Unsupported encoding type")
+
+        self.data = encoder.fit_transform(self.data)
         return self.data
