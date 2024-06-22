@@ -29,8 +29,8 @@ class DataPreprocessing:
         return self.data
 
     def encode_categorical(self, columns):
-        encoder = OneHotEncoder(sparse=False, drop='first')
+        encoder = OneHotEncoder(sparse_output=False, drop='first')
         encoded_features = encoder.fit_transform(self.data[columns])
-        encoded_df = pd.DataFrame(encoded_features, columns=encoder.get_feature_names(columns))
+        encoded_df = pd.DataFrame(encoded_features, columns=encoder.get_feature_names_out(columns))
         self.data = pd.concat([self.data.drop(columns, axis=1), encoded_df], axis=1)
         return self.data
