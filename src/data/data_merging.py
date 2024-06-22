@@ -1,63 +1,54 @@
 import pandas as pd
 import ipaddress
+from intervaltree import Interval, IntervalTree
 
-class DataMerging:
-    def __init__(self, fraud_data, ip_data):
-        self.fraud_data = fraud_data
-        self.ip_data = ip_data
+# Function to convert IP address to integer
+def ip_to_int(ip):
+    if pd.isna(ip):
+        return None
+    try:
+        return int(ip)
+    except ValueError:
+        return int(ipaddress.ip_address(ip))
 
-    def is_valid_ip(self, ip):
-        try:
-            ipaddress.ip_address(ip)
-            return True
-        except ValueError:
-            return False
+def main():
+    # Load the datasets
+    fraud_data = pd.read_csv('../data/processed/processed_fraud_data.csv')
+    ip_address_data = pd.read_csv('../data/raw/IpAddress_to_Country.csv')
 
-    def convert_ip_to_int(self):
-        print("Columns in fraud_data before conversion:", self.fraud_data.columns)
-        print("Columns in ip_data before conversion:", self.ip_data.columns)
-        
-        # Filter out invalid IP addresses in fraud_data
-        self.fraud_data = self.fraud_data[self.fraud_data['ip_address'].apply(self.is_valid_ip)]
+    # Print columns of ip_address_data to inspect
+    print(ip_address_data.columns)
 
-        # Convert valid IP addresses to integers in fraud_data
-        self.fraud_data['ip_address_int'] = self.fraud_data['ip_address'].apply(lambda x: int(ipaddress.ip_address(x)))
+    # Handle NaN values in IP address columns and convert IP address ranges to integers
+    ip_address_data.dropna(subset=['lower_bound_ip_address', 'upper_bound_ip_address'], inplace=True)
+    ip_address_data['lower_bound_ip_address_int'] = ip_address_data['lower_bound_ip_address'].apply(ip_to_int)
+    ip_address_data['upper_bound_ip_address_int'] = ip_address_data['upper_bound_ip_address'].apply(ip_to_int)
 
-        # Convert IP addresses to integers in ip_data (already done in your notebook)
-        self.ip_data['lower_bound_ip_address_int'] = self.ip_data['lower_bound_ip_address'].astype(int)
-        self.ip_data['upper_bound_ip_address_int'] = self.ip_data['upper_bound_ip_address'].astype(int)
+    # Create an interval tree for IP ranges
+    ip_tree = IntervalTree()
+    for _, row in ip_address_data.iterrows():
+        ip_tree[row['lower_bound_ip_address_int']:row['upper_bound_ip_address_int'] + 1] = row['country']
 
-        return self.fraud_data, self.ip_data
+    # Function to map IP address to country using the interval tree
+    def map_ip_to_country(ip_int):
+        if ip_int is None:
+            return 'Unknown'
+        interval = ip_tree[ip_int]
+        if interval:
+            return interval.pop().data
+        else:
+            return 'Unknown'
 
-    def ip_to_country(self, ip):
-        left = 0
-        right = len(self.ip_data) - 1
-        while left <= right:
-            mid = (left + right) // 2
-            if self.ip_data.iloc[mid]['lower_bound_ip_address_int'] <= ip <= self.ip_data.iloc[mid]['upper_bound_ip_address_int']:
-                return self.ip_data.iloc[mid]['country']
-            elif ip < self.ip_data.iloc[mid]['lower_bound_ip_address_int']:
-                right = mid - 1
-            else:
-                left = mid + 1
-        return 'Unknown'
+    # Handle NaN values in fraud_data IP addresses and apply function to get country for each IP address
+    fraud_data.dropna(subset=['ip_address'], inplace=True)
+    fraud_data['ip_address_int'] = fraud_data['ip_address'].apply(ip_to_int)
+    fraud_data['country'] = fraud_data['ip_address_int'].apply(map_ip_to_country)
 
-    def merge_datasets(self):
-        # Ensure the columns exist
-        if 'ip_address_int' not in self.fraud_data.columns:
-            raise KeyError("Column 'ip_address_int' not found in self.fraud_data. Run convert_ip_to_int() first.")
+    # Save the processed fraud data with country information
+    fraud_data.to_csv('../data/processed/processed_fraud_data_with_country.csv', index=False)
 
-        print("Columns in fraud_data before merging:", self.fraud_data.columns)
-        print("Columns in ip_data before merging:", self.ip_data.columns)
+    # Display the first few rows of the updated fraud_data
+    print(fraud_data.head())
 
-        # Map IP addresses to countries using binary search
-        self.fraud_data['country'] = self.fraud_data['ip_address_int'].apply(self.ip_to_country)
-
-        # Merge logic
-        merged_data = pd.merge_asof(self.fraud_data.sort_values('ip_address_int'),
-                                    self.ip_data[['lower_bound_ip_address_int', 'upper_bound_ip_address_int', 'country']],
-                                    left_on='ip_address_int',
-                                    right_on='lower_bound_ip_address_int',
-                                    direction='backward')
-
-        return merged_data
+if __name__ == "__main__":
+    main()
