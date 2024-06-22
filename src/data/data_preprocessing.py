@@ -1,5 +1,5 @@
 import pandas as pd
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
 
 class DataPreprocessing:
     def __init__(self, data):
@@ -26,4 +26,11 @@ class DataPreprocessing:
     def normalize_and_scale(self, columns):
         scaler = StandardScaler()
         self.data[columns] = scaler.fit_transform(self.data[columns])
+        return self.data
+
+    def encode_categorical(self, columns):
+        encoder = OneHotEncoder(sparse=False, drop='first')
+        encoded_features = encoder.fit_transform(self.data[columns])
+        encoded_df = pd.DataFrame(encoded_features, columns=encoder.get_feature_names(columns))
+        self.data = pd.concat([self.data.drop(columns, axis=1), encoded_df], axis=1)
         return self.data

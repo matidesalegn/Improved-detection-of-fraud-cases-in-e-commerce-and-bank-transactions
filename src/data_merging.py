@@ -13,7 +13,7 @@ def ip_to_int(ip):
 
 def main():
     # Load the datasets
-    fraud_data = pd.read_csv('../data/processed/processed_fraud_data.csv')
+    fraud_data = pd.read_csv('../data/raw/Fraud_Data.csv')
     ip_address_data = pd.read_csv('../data/raw/IpAddress_to_Country.csv')
 
     # Print columns of ip_address_data to inspect
@@ -45,7 +45,7 @@ def main():
     fraud_data['country'] = fraud_data['ip_address_int'].apply(map_ip_to_country)
 
     # Save the processed fraud data with country information
-    fraud_data.to_csv('../data/processed/processed_fraud_data_with_country.csv', index=False)
+    fraud_data.to_csv('../data/raw/fraud_data_with_country.csv', index=False)
 
     # Display the first few rows of the updated fraud_data
     print(fraud_data.head())
