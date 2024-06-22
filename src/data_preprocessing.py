@@ -4,7 +4,6 @@ from sklearn.preprocessing import StandardScaler
 class DataPreprocessing:
     def __init__(self, data):
         self.data = data
-        self.top_devices = self.get_top_devices()  # Define top_devices during initialization
 
     def handle_missing_values(self, method='drop', fill_value=None):
         if method == 'drop':
@@ -28,7 +27,6 @@ class DataPreprocessing:
         scaler = StandardScaler()
         self.data[columns] = scaler.fit_transform(self.data[columns])
         return self.data
-    
 
     def encode_categorical(self, columns):
         self.data = pd.get_dummies(self.data, columns=columns, drop_first=True)
