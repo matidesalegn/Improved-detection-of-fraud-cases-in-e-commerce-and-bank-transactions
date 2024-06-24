@@ -1,0 +1,15 @@
+artifact_uri: file:///d:/Improved%20detection%20of%20fraud%20cases%20in%20e-commerce%20and%20bank%20transactions/notebooks/mlruns/0/dc9826f7ee0f4a03bb23b812187aed1a/artifacts
+end_time: 1719257757631
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: dc9826f7ee0f4a03bb23b812187aed1a
+run_name: Decision Tree on Credit Card Data
+run_uuid: dc9826f7ee0f4a03bb23b812187aed1a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1719257727060
+status: 3
+tags: []
+user_id: matiwos.desalegn
