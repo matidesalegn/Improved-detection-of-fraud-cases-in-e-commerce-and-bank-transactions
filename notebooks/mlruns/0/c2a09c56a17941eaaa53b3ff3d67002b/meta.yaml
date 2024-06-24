@@ -1,0 +1,15 @@
+artifact_uri: file:///d:/Improved%20detection%20of%20fraud%20cases%20in%20e-commerce%20and%20bank%20transactions/notebooks/mlruns/0/c2a09c56a17941eaaa53b3ff3d67002b/artifacts
+end_time: 1719256970881
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: c2a09c56a17941eaaa53b3ff3d67002b
+run_name: Gradient Boosting on Fraud Data
+run_uuid: c2a09c56a17941eaaa53b3ff3d67002b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1719256966711
+status: 4
+tags: []
+user_id: matiwos.desalegn

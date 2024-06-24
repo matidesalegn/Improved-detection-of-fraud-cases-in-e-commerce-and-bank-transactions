@@ -1,0 +1,15 @@
+artifact_uri: file:///d:/Improved%20detection%20of%20fraud%20cases%20in%20e-commerce%20and%20bank%20transactions/notebooks/mlruns/0/07ac1d0267de49cfb0b50ae1ca2a78b1/artifacts
+end_time: 1719256966689
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 07ac1d0267de49cfb0b50ae1ca2a78b1
+run_name: Random Forest on Fraud Data
+run_uuid: 07ac1d0267de49cfb0b50ae1ca2a78b1
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1719256575056
+status: 3
+tags: []
+user_id: matiwos.desalegn
