@@ -3,3 +3,8 @@ data
 data/raw/creditcard.csv
 notebooks/mlruns/0
 notebooks/models
+# Add these lines to .gitignore
+notebooks/mlruns/0/8e59795b27354bd8b33289896942ffec/artifacts/Random Forest_model/model.pkl
+notebooks/mlruns/0/07ac1d0267de49cfb0b50ae1ca2a78b1/artifacts/Random Forest_model/model.pkl
+notebooks/models/fraud_data/random_forest_model.joblib
+
