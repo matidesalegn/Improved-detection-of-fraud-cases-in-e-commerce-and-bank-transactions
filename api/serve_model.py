@@ -1,6 +1,4 @@
-# serve_model.py
-
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import joblib
 import pandas as pd
 
@@ -12,7 +10,7 @@ model = joblib.load(model_path)
 
 @app.route('/')
 def home():
-    return "Fraud Detection Model API"
+    return render_template('index.html')
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -20,9 +18,9 @@ def predict():
         # Get JSON data from request
         data = request.get_json(force=True)
         # Convert data to DataFrame
-        input_data = pd.DataFrame(data)
+        input_data = pd.DataFrame(data, index=[0])
         # Ensure the data has the correct columns
-        expected_columns = [...]  # Add the expected columns based on your model
+        expected_columns = ['feature1', 'feature2', 'feature3']  # Replace with your actual column names
         input_data = input_data.reindex(columns=expected_columns, fill_value=0)
         # Make predictions
         predictions = model.predict(input_data)
