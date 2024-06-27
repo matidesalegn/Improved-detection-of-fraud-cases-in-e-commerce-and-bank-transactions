@@ -7,7 +7,7 @@ import pandas as pd
 app = Flask(__name__)
 
 # Load the fraud detection model
-model_path = '../models/random_forest_model.joblib'
+model_path = '../notebooks/models/random_forest_model.joblib'
 model = joblib.load(model_path)
 
 @app.route('/')
